@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superscene.weatherserver.mapper.MessageMapper">
+    <select id="queryByToday" resultType="com.superscene.weatherserver.entity.MessageDao" >
+        select * from VW_BEIDOU_SHORT_MESSAGE where
+        (JLRKSJ between to_date(#{starttm},'yyyy-mm-dd HH24:MI:SS') and to_date(#{endtm},'yyyy-mm-dd HH24:MI:SS'))
+        order by JLRKSJ asc
+    </select>
+    <select id="queryByTime" resultType="com.superscene.weatherserver.entity.MessageDao" >
+        select * from VW_BEIDOU_SHORT_MESSAGE t
+        where t.JLRKSJ >= to_date(#{starttm},'yyyy-mm-dd HH24:MI:SS') and t.JLRKSJ &lt;= to_date(#{endtm},'yyyy-mm-dd HH24:MI:SS') order by t.JLRKSJ desc
+    </select>
+</mapper>

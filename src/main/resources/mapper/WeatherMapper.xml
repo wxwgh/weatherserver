@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superscene.weatherserver.mapper.WeatherMapper">
+        <update id="updateWeatherCity">
+            <foreach collection="weatherCityList" item="item" index="index" separator=";"  open="begin" close=";end;">
+                UPDATE P_CITY_3857 SET img_url = #{item.imgUrl}
+                <if test="item.weather != null and item.weather != ''">
+                    ,weather = #{item.weather}
+                </if>
+                <if test="item.maxTemperature != null and item.maxTemperature != ''">
+                    ,max_temperature = #{item.maxTemperature}
+                </if>
+                <if test="item.minTemperature != null and item.minTemperature != ''">
+                    ,min_temperature = #{item.minTemperature}
+                </if>
+                <if test="item.rain != null and item.rain != ''">
+                    ,rain = #{item.rain}
+                </if>
+                <if test="item.rainfall != null and item.rainfall != ''">
+                    ,rainfall = #{item.rainfall}
+                </if>
+                <if test="item.windDirection != null and item.windDirection != ''">
+                    ,wind_direction = #{item.windDirection}
+                </if>
+                <if test="item.windSpeed != null and item.windSpeed != ''">
+                    ,wind_speed = #{item.windSpeed}
+                </if>
+                WHERE 1 = 1
+                <if test="item.name != null">
+                    AND name = #{item.name}
+                </if>
+                <if test="item.district != null and item.district != ''">
+                    AND district = #{item.district}
+                </if>
+                <if test="item.province != null and item.province != ''">
+                    AND province = #{item.province}
+                </if>
+            </foreach>
+        </update>
+    <!--<insert id="insertWeatherCity" >-->
+        <!--<foreach collection="weatherCityList" item="item" index="index" separator=";"  open="begin" close=";end;">-->
+            <!--INSERT INTO T_CITY_WEATHER(NAME,DISTRICT,PROVINCE,NATION,WEATHER,MAX_TEMPERATURE,MIN_TEMPERATURE,RAIN,RAINFALL,WIND_DIRECTION,WIND_SPEED,START_TIME,END_TIME)-->
+            <!--values(#{item.name,jdbcType=VARCHAR},#{item.district,jdbcType=VARCHAR},#{item.province,jdbcType=VARCHAR},#{item.nation,jdbcType=VARCHAR},#{item.weather,jdbcType=VARCHAR},#{item.maxTemperature,jdbcType=VARCHAR},#{item.minTemperature,jdbcType=VARCHAR},#{item.rain,jdbcType=VARCHAR},#{item.rainfall,jdbcType=VARCHAR},#{item.windDirection,jdbcType=VARCHAR},#{item.windSpeed,jdbcType=VARCHAR},#{item.startTime,jdbcType=VARCHAR},#{item.endTime,jdbcType=VARCHAR})-->
+        <!--</foreach>-->
+    <!--</insert>-->
+    <insert id="insertWeatherCity" parameterType="com.superscene.weatherserver.entity.WeatherCity">
+            INSERT INTO T_CITY_WEATHER(NAME,DISTRICT,PROVINCE,NATION,WEATHER,MAX_TEMPERATURE,MIN_TEMPERATURE,RAIN,RAINFALL,WIND_DIRECTION,WIND_SPEED,START_TIME,END_TIME)
+            values(#{weatherCity.name,jdbcType=VARCHAR},#{weatherCity.district,jdbcType=VARCHAR},#{weatherCity.province,jdbcType=VARCHAR},#{weatherCity.nation,jdbcType=VARCHAR},#{weatherCity.weather,jdbcType=VARCHAR},#{weatherCity.maxTemperature,jdbcType=VARCHAR},#{weatherCity.minTemperature,jdbcType=VARCHAR},#{weatherCity.rain,jdbcType=VARCHAR},#{weatherCity.rainfall,jdbcType=VARCHAR},#{weatherCity.windDirection,jdbcType=VARCHAR},#{weatherCity.windSpeed,jdbcType=VARCHAR},#{weatherCity.startTime,jdbcType=VARCHAR},#{weatherCity.endTime,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="deleteWeatherCity" parameterType="com.superscene.weatherserver.entity.WeatherCity">
+        DELETE FROM T_CITY_WEATHER
+</delete>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superscene.weatherserver.mapper.EarlyWarningDisasterMapper">
+
+    <select id="queryInfoAll" resultType="com.superscene.weatherserver.entity.Warning">
+        select
+            t.ID as t_id,
+            t.经度 as t_longitude,
+            t.纬度 as t_latitude,
+            t.灾害类型 as t_type_disaster,
+            t.站点名称 as t_site_name,
+            t.发布时间 as t_release_time
+        from bigscreen.vw_slxfj_qxzhinfo t
+        where t.经度 is not null and t.纬度 is not null
+    </select>
+
+    <select id="queryContent" resultType="java.lang.String" parameterType="java.lang.String">
+        select
+            t.预警内容 as t_warning_content
+        from bigscreen.vw_slxfj_qxzhinfo t
+        where t.ID = #{id}
+    </select>
+
+</mapper>
+    

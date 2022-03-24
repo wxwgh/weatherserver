@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.superscene.weatherserver.mapper.BeidouMapper">
+    <select id="queryBySblx" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from T_POSI_BEIDOU_EXCH t
+        where sblx = #{sblx}
+    </select>
+    <select id="queryTotalXT" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from  (select ROW_NUMBER() OVER(PARTITION BY t.GPSID ORDER BY t.POSITIME DESC) rn,t.* from T_POSI_BEIDOU_EXCH t) where rn = 1
+    </select>
+    <select id="queryXTByDWDM" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from  (select ROW_NUMBER() OVER(PARTITION BY t.GPSID ORDER BY t.POSITIME DESC) rn,t.* from T_POSI_BEIDOU_EXCH t) where rn = 1 and dwdm like '%${dwdm}%'
+    </select>
+    <select id="queryXTByTime" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from  (select ROW_NUMBER() OVER(PARTITION BY t.GPSID ORDER BY t.POSITIME DESC) rn,t.* from T_POSI_BEIDOU_EXCH t where (positime between to_date(#{starttm},'yyyy-mm-dd HH24:MI:SS') and to_date(#{endtm},'yyyy-mm-dd HH24:MI:SS'))) where rn = 1
+    </select>
+    <select id="queryByNow" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from T_POSI_BEIDOU_EXCH where gpsid=#{gpsid} and
+        (positime between to_date(#{starttm},'yyyy-mm-dd HH24:MI:SS') and to_date(#{endtm},'yyyy-mm-dd HH24:MI:SS'))
+    </select>
+    <select id="queryAllByToday" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from T_POSI_BEIDOU_EXCH where
+        (positime between to_date(#{starttm},'yyyy-mm-dd HH24:MI:SS') and to_date(#{endtm},'yyyy-mm-dd HH24:MI:SS'))
+        order by positime asc
+    </select>
+    <select id="queryByToday" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from T_POSI_BEIDOU_EXCH  a inner join
+                      (select gpsid,max(positime) as positime from T_POSI_BEIDOU_EXCH where  sblx = '4' and positime>to_date(#{today},'yyyy-mm-dd HH24:MI:SS') group by gpsid)  b
+                      on a.gpsid=b.gpsid and a.positime=b.positime
+    </select>
+
+    <select id="queryPath" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from T_POSI_BEIDOU_EXCH
+        where gpsid=#{gpsid} and
+        (positime between to_date(#{starttm},'yyyy-mm-dd HH24:MI:SS') and to_date(#{endtm},'yyyy-mm-dd HH24:MI:SS'))
+    </select>
+
+    <select id="queryByOnline" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from (select ROW_NUMBER() OVER(PARTITION BY t.GPSID ORDER BY t.POSITIME DESC) rn,t.* from T_POSI_BEIDOU_EXCH t where (t.positime >= sysdate - 10/1440 and t.positime &lt;= sysdate)) where rn = 1
+    </select>
+    <select id="queryByOutline" resultType="com.superscene.weatherserver.entity.BeiDou" >
+        select * from (select ROW_NUMBER() OVER(PARTITION BY t.GPSID ORDER BY t.POSITIME DESC) rn,t.* from T_POSI_BEIDOU_EXCH t where (t.positime &lt; (sysdate - 10/1440 ))) where rn = 1
+    </select>
+</mapper>
